@@ -44,8 +44,9 @@ const getImageDataDecode = (image: HTMLImageElement)   => {
 };
 
 
-const image = await loadImageDecode('IMG_7459.jpg');
-getImageDataDecode(image);
+loadImageDecode('IMG_7459.jpg').then(image => {
+  getImageDataDecode(image);
+});
 
 const div = document.createElement('div');
 main.appendChild(div);
