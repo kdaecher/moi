@@ -17,7 +17,8 @@ div.style.left = '40%';
 div.style.color = 'white';
 div.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 div.style.padding = '6px';
-div.style.cursor = 'pointer';
+div.style.cursor = 'move'; // fallback
+div.style.cursor = 'grab';
 div.style.whiteSpace = "nowrap";
 div.appendChild(document.createTextNode("karson daecher"));
 
