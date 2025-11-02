@@ -1,20 +1,22 @@
-export function DragAndDrop() {
-  const name = document.getElementById('name');
-  const main = document.getElementById('main');
+const app = document.getElementById('app');
 
-  if (!name || !main) return;
+export function drag_and_drop(elementId: string) {
+  const target = document.getElementById(elementId);
+
+  if (!target || !app) return;
 
   const onDragStart = (event: MouseEvent | TouchEvent)  => {
+    event.preventDefault();
     const e = event instanceof MouseEvent ? event : event.touches[0];
 
-    let shiftX = e.clientX - name.getBoundingClientRect().left;
-    let shiftY = e.clientY - name.getBoundingClientRect().top;
+    let shiftX = e.clientX - target.getBoundingClientRect().left;
+    let shiftY = e.clientY - target.getBoundingClientRect().top
 
-    name.style.cursor = 'grabbing';
+    target.style.cursor = 'grabbing';
 
     const moveAt = (pageX: number, pageY: number) => {
-      name.style.left = pageX - shiftX + 'px';
-      name.style.top = pageY - shiftY + 'px';
+      target.style.left = pageX - shiftX + 'px';
+      target.style.top = pageY - shiftY + 'px';
     };
 
     moveAt(e.pageX, e.pageY);
@@ -32,23 +34,23 @@ export function DragAndDrop() {
     document.addEventListener('touchmove', onTouchMove);
 
     const moveInBounds = () => {
-      const nameRect = name.getBoundingClientRect();
-      
-      if (nameRect.left < 0) {
-        name.style.left = '0px';
-      } else if (nameRect.left > main.clientWidth - name.clientWidth) {
-        name.style.left = main.clientWidth - name.clientWidth + 'px';
+      const targetRect = target.getBoundingClientRect();
+
+      if (targetRect.left < 0) {
+        target.style.left = '0px';
+      } else if (targetRect.left > app.clientWidth - target.clientWidth) {
+        target.style.left = app.clientWidth - target.clientWidth + 'px';
       }
 
-      if (nameRect.top < 0) {
-        name.style.top = '0px';
-      } else if (nameRect.top > main.clientHeight - name.clientHeight) {
-        name.style.top = main.clientHeight - name.clientHeight + 'px';
+      if (targetRect.top < 0) {
+        target.style.top = '0px';
+      } else if (targetRect.top > app.clientHeight - target.clientHeight) {
+        target.style.top = app.clientHeight - target.clientHeight + 'px';
       }
     };
 
     const onEnd = () => {
-      name.style.cursor = 'grab';
+      target.style.cursor = 'grab';
       moveInBounds();
     };
 
@@ -70,6 +72,6 @@ export function DragAndDrop() {
     document.addEventListener('touchcancel', onTouchUp);
   };
 
-  name?.addEventListener('mousedown', onDragStart);
-  name?.addEventListener("touchstart", onDragStart);
-} 
+  target?.addEventListener('mousedown', onDragStart);
+  target?.addEventListener('touchstart', onDragStart);
+}
