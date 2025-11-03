@@ -84,6 +84,7 @@ image1.style.position = 'absolute';
 image1.style.top = '67%';
 image1.style.left = '18%';
 image1.style.rotate = '-15deg';
+image1.style.cursor = 'pointer';
 app.appendChild(image1);
 
 const image2 = blurhash_image('cats.jpeg', 'L6F=gfys02^,01^ORR0g004.-=w[');
@@ -92,6 +93,7 @@ image2.style.position = 'absolute';
 image2.style.top = '53%';
 image2.style.left = '20%';
 image2.style.rotate = '10deg';
+image2.style.cursor = 'pointer';
 app.appendChild(image2);
 
 const image3 = blurhash_image('butterflies.jpeg', 'T8AeXd^Z~q004p4o?a?a-:M|M{Rj');
@@ -100,6 +102,7 @@ image3.style.position = 'absolute';
 image3.style.top = '64%';
 image3.style.left = '25%';
 image3.style.rotate = '5deg';
+image3.style.cursor = 'pointer';
 app.appendChild(image3);
 
 const rockImage = document.createElement('img');
