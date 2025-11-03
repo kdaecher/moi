@@ -20,6 +20,7 @@ lampImage.style.position = 'absolute';
 lampImage.style.top = '10%';
 lampImage.style.left = '42%';
 lampImage.style.cursor = 'pointer';
+lampImage.style.zIndex = '1';
 lampImage.onclick = () => {
   themeManager.toggleTheme();
 };
@@ -27,35 +28,25 @@ app.appendChild(lampImage);
 
 /** info container */
 const info = document.querySelector<HTMLDivElement>('#info')!;
-info.id = 'info';
-info.style.position = 'absolute';
-info.style.top = '20%';
-info.style.left = '30%';
-info.style.fontFamily = 'Arial, sans-serif';
-info.style.fontSize = '20px';
-info.style.display = 'flex';
-info.style.color = 'var(--text-color)';
-info.style.flexDirection = 'column';
+info.style.zIndex = '2';
 
-info.addEventListener('click', () => {
+/** name  */
+const name = document.querySelector<HTMLDivElement>('#name')!;
+name.addEventListener('click', () => {
   const details = document.getElementById('details');
   if (details) {
     details.style.display = details.style.display === 'none' ? 'flex' : 'none';
   }
 });
 
-/** name  */
-const name = document.querySelector<HTMLDivElement>('#name')!;
-name.style.display = 'flex';
-
-const style = document.createElement('style');
-style.textContent = `
+const nameHover = document.createElement('style');
+nameHover.textContent = `
   #name:hover {
     color: var(--accent-color);
     text-decoration: underline;
   }
 `;
-document.head.appendChild(style);
+document.head.appendChild(nameHover);
 
 /** contact info */
 const details = document.createElement('div');
