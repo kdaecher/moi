@@ -4,8 +4,9 @@ import light from './assets/light.svg';
 
 import { drag_and_drop } from './drag-and-drop';
 import { blurhash_image } from './blurhash-image';
-import { ThemeManager } from './theme-manager';
 import { lightbox } from './lightbox';
+import { ThemeManager } from './theme-manager';
+import { layerManager } from './layer-manager';
 
 const themeManager = new ThemeManager();
 
@@ -50,7 +51,7 @@ lampImage.style.position = 'absolute';
 lampImage.style.bottom = '0';
 lampImage.style.right = '0';
 lampImage.style.cursor = 'pointer';
-lampImage.style.zIndex = '1';
+layerManager.register(lampImage, 1);
 lampImage.onclick = () => {
   themeManager.toggleTheme();
 };
@@ -58,7 +59,7 @@ lampContainer.appendChild(lampImage);
 
 /** info container */
 const info = document.querySelector<HTMLDivElement>('#info')!;
-info.style.zIndex = '2';
+layerManager.register(info, 2);
 
 /** name  */
 const name = document.querySelector<HTMLDivElement>('#name')!;
@@ -126,6 +127,20 @@ image3.style.transform = 'rotate(5deg)';
 app.appendChild(image3);
 drag_and_drop('image3');
 
+const num_images = 3;
+for (let i = 1; i <= num_images; i++) {
+  const imageEl = document.getElementById(`image${i}`);
+  if (!imageEl) continue;
+
+  imageEl.onclick = () => {
+    layerManager.bringToFront(imageEl);
+  }
+
+  imageEl.ondblclick = () => {
+    lightbox(`image${i}`);
+  }
+}
+
 const rockImage = document.createElement('img');
 rockImage.id = 'rock';
 rockImage.src = rock;
@@ -136,27 +151,7 @@ rockImage.style.top = '65%';
 rockImage.style.left = '20%';
 app.appendChild(rockImage);
 drag_and_drop('rock');
+
 rockImage.onclick = () => {
-  move_image_to_front('rock');
-}
-
-const num_images = 3;
-for (let i = 1; i <= num_images; i++) {
-  const imageEl = document.getElementById(`image${i}`);
-  if (imageEl) {
-    imageEl.onclick = () => {
-      move_image_to_front(`image${i}`);
-    }
-    imageEl.ondblclick = () => {
-      lightbox(`image${i}`);
-    }
-  }
-}
-
-let image_stack_z_index = 1;
-function move_image_to_front(image_id: string) {
-  const img = document.getElementById(image_id);
-  if (img) {
-    img.style.zIndex = String(image_stack_z_index++);
-  }
+  layerManager.bringToFront(rockImage);
 }

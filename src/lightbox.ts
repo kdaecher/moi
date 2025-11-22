@@ -1,3 +1,5 @@
+import { layerManager } from './layer-manager';
+
 export function lightbox(elementId: string) {
   const element = document.getElementById(elementId);
   if (!element) return;
@@ -38,19 +40,19 @@ export function lightbox(elementId: string) {
   overlay.style.width = '100%';
   overlay.style.height = '100%';
   overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-  overlay.style.zIndex = '0';
+  layerManager.register(overlay);
   overlay.style.transition = 'all 0.3s ease';
   document.body.appendChild(overlay);
 
   workingElement.style.cursor = 'default';
   workingElement.style.position = 'fixed';
-  workingElement.style.zIndex = '1001';
+  layerManager.set(workingElement, layerManager.getMaxZIndex() + 2);
   workingElement.style.transition = 'all 0.3s ease';
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-      overlay.style.zIndex = '1000';
+      layerManager.set(overlay, layerManager.getMaxZIndex() - 1);
       const maxWidth = window.innerWidth * 0.9;
       const maxHeight = window.innerHeight * 0.9;
       const aspectRatio = widthBeforeTransform / heightBeforeTransform;
