@@ -7,6 +7,7 @@ export function drag_and_drop(elementId: string) {
 
   const onDragStart = (event: MouseEvent | TouchEvent)  => {
     event.preventDefault();
+    event.stopPropagation();
     const e = event instanceof MouseEvent ? event : event.touches[0];
 
     let shiftX = e.clientX - target.getBoundingClientRect().left;

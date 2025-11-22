@@ -1,5 +1,6 @@
+type ThemeName = 'light' | 'dark';
 export interface Theme {
-  name: string;
+  name: ThemeName;
   colors: {
     background: string;
     text: string;
@@ -29,24 +30,50 @@ export const themes: Record<string, Theme> = {
 export class ThemeManager {
   private currentTheme: Theme;
   private storageKey = 'moi-theme';
+  private listeners: Map<string, Set<(theme: Theme) => void>> = new Map();
 
   constructor() {
     const savedTheme = localStorage.getItem(this.storageKey);
-    this.currentTheme = (savedTheme && themes[savedTheme]) ? themes[savedTheme] : themes.light;
+    if (savedTheme && themes[savedTheme]) {
+      this.currentTheme = themes[savedTheme];
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.currentTheme = prefersDark ? themes.dark : themes.light;
+    }
     this.applyTheme();
   }
 
-  toggleTheme(): void {
-    const newTheme = this.currentTheme.name === 'light' ? 'dark' : 'light';
-    this.setTheme(newTheme);
+  on(event: 'themeChange', callback: (theme: Theme) => void): void {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, new Set());
+    }
+    this.listeners.get(event)!.add(callback);
   }
 
-  private setTheme(themeName: string): void {
-    if (themes[themeName]) {
-      this.currentTheme = themes[themeName];
-      this.applyTheme();
-      this.saveTheme();
+  off(event: 'themeChange', callback: (theme: Theme) => void): void {
+    const eventListeners = this.listeners.get(event);
+    if (eventListeners) {
+      eventListeners.delete(callback);
     }
+  }
+
+  private emit(event: string, theme: Theme): void {
+    const eventListeners = this.listeners.get(event);
+    if (eventListeners) {
+      eventListeners.forEach(callback => callback(theme));
+    }
+  }
+
+  get(): Theme {
+    return this.currentTheme;
+  }
+
+  toggleTheme(): void {
+    const newThemeName = this.currentTheme.name === 'light' ? 'dark' : 'light';
+    this.currentTheme = themes[newThemeName];
+    this.applyTheme();
+    this.saveTheme();
+    this.emit('themeChange', this.currentTheme);
   }
 
   private applyTheme(): void {

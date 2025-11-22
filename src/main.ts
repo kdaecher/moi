@@ -1,5 +1,6 @@
 import rock from './assets/rock.png';
 import lamp from './assets/lamp_3.svg';
+import light from './assets/light.svg';
 
 import { drag_and_drop } from './drag-and-drop';
 import { blurhash_image } from './blurhash-image';
@@ -12,19 +13,47 @@ app.style.display = 'flex';
 app.style.height = '100vh';
 app.style.width = '100vw';
 
+/** lamp container */
+const lampContainer = document.createElement('div');
+lampContainer.style.width = '418px';
+lampContainer.style.height = '215px';
+lampContainer.style.position = 'absolute';
+lampContainer.style.top = '10%';
+lampContainer.style.left = '27%';
+lampContainer.style.position = "relative";
+app.appendChild(lampContainer);
+
+/** light */
+const lightImage = document.createElement('img');
+lightImage.src = light;
+lightImage.style.width = '304px';
+lightImage.style.position = 'absolute';
+lightImage.style.bottom = '0';
+lightImage.style.right = 'calc(418px - 304px)';
+lightImage.style.display = themeManager.get().name === 'light' ? 'none' : 'block';
+lampContainer.appendChild(lightImage);
+
+themeManager.on('themeChange', (theme) => {
+  if (theme.name === 'light') {
+    lightImage.style.display = 'none';
+  } else {
+    lightImage.style.display = 'block';
+  }
+});
+
 /** lamp */
 const lampImage = document.createElement('img');
 lampImage.src = lamp;
 lampImage.style.width = '200px';
 lampImage.style.position = 'absolute';
-lampImage.style.top = '10%';
-lampImage.style.left = '42%';
+lampImage.style.bottom = '0';
+lampImage.style.right = '0';
 lampImage.style.cursor = 'pointer';
 lampImage.style.zIndex = '1';
 lampImage.onclick = () => {
   themeManager.toggleTheme();
 };
-app.appendChild(lampImage);
+lampContainer.appendChild(lampImage);
 
 /** info container */
 const info = document.querySelector<HTMLDivElement>('#info')!;
@@ -67,15 +96,6 @@ email.style.display = 'flex'
 email.style.color = 'var(--text-color)';
 email.style.textDecoration = 'none';
 details.appendChild(email);
-
-const linkedin = document.createElement('a');
-linkedin.style.display = 'flex';
-linkedin.textContent = 'linkedin.com/in/karson-daecher';
-linkedin.href = 'https://www.linkedin.com/in/karson-daecher';
-linkedin.target = '_blank';
-linkedin.style.color = 'var(--text-color)';
-linkedin.style.textDecoration = 'none';
-details.appendChild(linkedin);
 
 /** image gallery */
 const image1 = blurhash_image('IMG_7459.jpg', 'U44dfYO91Y,wayj[a}a{1Yw#}HFWWCfPoKjb');
