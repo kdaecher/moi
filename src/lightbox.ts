@@ -28,7 +28,7 @@ export function lightbox(elementId: string) {
   const topBeforeTransform = centerY - heightBeforeTransform / 2;
   
   const transform = computedStyle.transform;
-  let originalRotation = transform && transform !== 'none' ? 
+  const originalRotation = transform && transform !== 'none' ? 
     parseTransform(transform).rotation : 0;
 
   const overlay = document.createElement('div');
