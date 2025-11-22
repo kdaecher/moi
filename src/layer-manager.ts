@@ -1,8 +1,10 @@
 const BASE = 0;
 
+type ValidElement = HTMLElement | SVGElement;
+
 class LayerManager {
   private static instance: LayerManager;
-  private layerStack: Map<HTMLElement, number> = new Map();
+  private layerStack: Map<ValidElement, number> = new Map();
   private currentMaxZIndex: number = BASE;
 
   private constructor() {}
@@ -14,7 +16,7 @@ class LayerManager {
     return LayerManager.instance;
   }
 
-  public register(element: HTMLElement, layer?: number): void {
+  public register(element: ValidElement, layer?: number): void {
     if (layer === undefined) {
       element.style.zIndex = BASE.toString();
       this.layerStack.set(element, BASE);
@@ -25,26 +27,26 @@ class LayerManager {
     this.currentMaxZIndex = Math.max(this.currentMaxZIndex, layer);
   }
 
-  public set(element: HTMLElement, layer: number): void {
+  public set(element: ValidElement, layer: number): void {
     this.register(element, layer);
   }
 
-  public get(element: HTMLElement): number | undefined {
+  public get(element: ValidElement): number | undefined {
     return this.layerStack.get(element);
   }
 
-  public bringToFront(element: HTMLElement): void {
+  public bringToFront(element: ValidElement): void {
     this.currentMaxZIndex++;
     element.style.zIndex = this.currentMaxZIndex.toString();
     this.layerStack.set(element, this.currentMaxZIndex);
   }
 
-  public sendToBack(element: HTMLElement): void {
+  public sendToBack(element: ValidElement): void {
     element.style.zIndex = BASE.toString();
     this.layerStack.set(element, BASE);
   }
 
-  public remove(element: HTMLElement): void {
+  public remove(element: ValidElement): void {
     this.layerStack.delete(element);
     element.style.zIndex = '';
   }
