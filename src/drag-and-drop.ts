@@ -1,3 +1,5 @@
+import { layerManager } from './layer-manager';
+
 const app = document.getElementById('app');
 
 export function drag_and_drop(elementId: string) {
@@ -8,6 +10,7 @@ export function drag_and_drop(elementId: string) {
   const onDragStart = (event: MouseEvent | TouchEvent)  => {
     event.preventDefault();
     event.stopPropagation();
+    layerManager.bringToFront(target);
     target.style.cursor = 'grabbing';
 
     const e = event instanceof MouseEvent ? event : event.touches[0];
