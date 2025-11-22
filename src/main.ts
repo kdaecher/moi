@@ -1,6 +1,4 @@
 import rock from './assets/rock.png';
-import lamp from './assets/lamp_3.svg';
-import light from './assets/light.svg';
 
 import { drag_and_drop } from './drag-and-drop';
 import { blurhash_image } from './blurhash-image';
@@ -15,26 +13,9 @@ app.style.display = 'flex';
 app.style.height = '100vh';
 app.style.width = '100vw';
 
-/** lamp container */
-const lampContainer = document.createElement('div');
-lampContainer.style.width = '418px';
-lampContainer.style.height = '215px';
-lampContainer.style.position = 'absolute';
-lampContainer.style.top = '10%';
-lampContainer.style.left = '27%';
-lampContainer.style.position = "relative";
-app.appendChild(lampContainer);
-
 /** light */
-const lightImage = document.createElement('img');
-lightImage.src = light;
-lightImage.style.width = '304px';
-lightImage.style.position = 'absolute';
-lightImage.style.bottom = '0';
-lightImage.style.right = 'calc(418px - 304px)';
+const lightImage = document.querySelector<SVGElement>('#light')!;
 lightImage.style.display = themeManager.get().name === 'light' ? 'none' : 'block';
-lampContainer.appendChild(lightImage);
-
 themeManager.on('themeChange', (theme) => {
   if (theme.name === 'light') {
     lightImage.style.display = 'none';
@@ -44,18 +25,12 @@ themeManager.on('themeChange', (theme) => {
 });
 
 /** lamp */
-const lampImage = document.createElement('img');
-lampImage.src = lamp;
-lampImage.style.width = '200px';
-lampImage.style.position = 'absolute';
-lampImage.style.bottom = '0';
-lampImage.style.right = '0';
-lampImage.style.cursor = 'pointer';
-layerManager.register(lampImage, 1);
-lampImage.onclick = () => {
+const lamp = document.querySelector<SVGElement>('#lamp')!;
+lamp.style.cursor = 'pointer';
+layerManager.register(lamp, 1);
+lamp.onclick = () => {
   themeManager.toggleTheme();
 };
-lampContainer.appendChild(lampImage);
 
 /** info container */
 const info = document.querySelector<HTMLDivElement>('#info')!;
@@ -86,7 +61,7 @@ details.style.display = 'none';
 details.style.fontSize = '14px';
 details.style.fontFamily = 'serif';
 details.style.flexDirection = 'column';
-details.style.marginTop = '8px';
+details.style.marginTop = '4px';
 details.style.marginLeft = '1px';
 details.style.gap = '4px';
 info.appendChild(details);
