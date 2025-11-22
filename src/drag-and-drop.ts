@@ -8,19 +8,27 @@ export function drag_and_drop(elementId: string) {
   const onDragStart = (event: MouseEvent | TouchEvent)  => {
     event.preventDefault();
     event.stopPropagation();
-    const e = event instanceof MouseEvent ? event : event.touches[0];
-
-    let shiftX = e.clientX - target.getBoundingClientRect().left;
-    let shiftY = e.clientY - target.getBoundingClientRect().top
-
     target.style.cursor = 'grabbing';
 
-    const moveAt = (pageX: number, pageY: number) => {
-      target.style.left = pageX - shiftX + 'px';
-      target.style.top = pageY - shiftY + 'px';
-    };
+    const e = event instanceof MouseEvent ? event : event.touches[0];
 
-    moveAt(e.pageX, e.pageY);
+    // initial mouse/touch position
+    const startPageX = e.pageX;
+    const startPageY = e.pageY;
+
+    // initial element position
+    const startLeft = target.offsetLeft;
+    const startTop = target.offsetTop;
+
+    const moveAt = (pageX: number, pageY: number) => {
+      // mouse delta
+      const deltaX = pageX - startPageX;
+      const deltaY = pageY - startPageY;
+
+      // apply mouse delta to element position
+      target.style.left = (startLeft + deltaX) + 'px';
+      target.style.top = (startTop + deltaY) + 'px';
+    };
 
     const onMouseMove = (e: MouseEvent) => {
       moveAt(e.pageX, e.pageY);
