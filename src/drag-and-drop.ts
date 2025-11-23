@@ -43,9 +43,6 @@ export function drag_and_drop(elementId: string) {
       moveAt(touch.pageX, touch.pageY);
     };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('touchmove', onTouchMove);
-
     const moveInBounds = () => {
       const targetRect = target.getBoundingClientRect();
 
@@ -80,9 +77,14 @@ export function drag_and_drop(elementId: string) {
       document.removeEventListener('touchcancel', onTouchUp);
     };
 
-    document.addEventListener('mouseup', onMouseUp);
-    document.addEventListener('touchend', onTouchUp);
-    document.addEventListener('touchcancel', onTouchUp);
+    if (event instanceof MouseEvent) {
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    } else {
+      document.addEventListener('touchmove', onTouchMove);
+      document.addEventListener('touchend', onTouchUp);
+      document.addEventListener('touchcancel', onTouchUp);
+    }
   };
 
   target?.addEventListener('mousedown', onDragStart);
