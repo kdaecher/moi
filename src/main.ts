@@ -29,10 +29,10 @@ const lamp = document.querySelector<SVGElement>('#lamp')!;
 lamp.style.cursor = 'pointer';
 lamp.style.userSelect = 'none';
 layerManager.register(lamp, 1);
-lamp.onclick = (e) => {
+lamp.addEventListener('click', (e) => {
   e.stopPropagation();
   themeManager.toggleTheme();
-};
+});
 
 /** info container */
 const info = document.querySelector<HTMLDivElement>('#info')!;
@@ -109,9 +109,9 @@ for (let i = 1; i <= num_images; i++) {
   const imageEl = document.getElementById(`image${i}`);
   if (!imageEl) continue;
 
-  imageEl.onclick = () => {
+  imageEl.addEventListener('click', () => {
     layerManager.bringToFront(imageEl);
-  }
+  });
 
   imageEl.ondblclick = () => {
     lightbox(`image${i}`);
@@ -129,6 +129,6 @@ rockImage.style.left = '20%';
 app.appendChild(rockImage);
 drag_and_drop('rock');
 
-rockImage.onclick = () => {
+rockImage.addEventListener('click', () => {
   layerManager.bringToFront(rockImage);
-}
+});

@@ -6,6 +6,7 @@ export function drag_and_drop(elementId: string) {
   const target = document.getElementById(elementId);
 
   if (!target || !app) return;
+  target.style.cursor = 'grab';
 
   const onDragStart = (event: MouseEvent | TouchEvent)  => {
     event.preventDefault();
