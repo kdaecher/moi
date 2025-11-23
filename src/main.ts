@@ -27,8 +27,10 @@ themeManager.on('themeChange', (theme) => {
 /** lamp */
 const lamp = document.querySelector<SVGElement>('#lamp')!;
 lamp.style.cursor = 'pointer';
+lamp.style.userSelect = 'none';
 layerManager.register(lamp, 1);
-lamp.onclick = () => {
+lamp.onclick = (e) => {
+  e.stopPropagation();
   themeManager.toggleTheme();
 };
 
