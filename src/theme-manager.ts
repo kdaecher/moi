@@ -4,43 +4,51 @@ export interface Theme {
   colors: {
     background: string;
     text: string;
-    accent: string;
+    hover: string;
   };
 }
 
-export const themes: Record<string, Theme> = {
-  light: {
-    name: 'light',
-    colors: {
-      background: 'white',
-      text: 'black',
-      accent: 'blue'
-    }
-  },
-  dark: {
-    name: 'dark',
-    colors: {
-      background: 'black',
-      text: 'white',
-      accent: 'lightblue',
-    }
-  }
-};
-
 export class ThemeManager {
+  private themes: Record<ThemeName, Theme>;
   private currentTheme: Theme;
-  private storageKey = 'moi-theme';
   private listeners: Map<string, Set<(theme: Theme) => void>> = new Map();
 
   constructor() {
-    const savedTheme = localStorage.getItem(this.storageKey);
-    if (savedTheme && themes[savedTheme]) {
-      this.currentTheme = themes[savedTheme];
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.currentTheme = prefersDark ? themes.dark : themes.light;
-    }
+    this.themes = this.readThemesFromCSS();
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    this.currentTheme = prefersDark ? this.themes.dark : this.themes.light;
     this.applyTheme();
+  }
+
+  private readThemesFromCSS(): Record<ThemeName, Theme> {
+    const tempElement = document.createElement('div');
+    tempElement.style.display = 'none';
+    document.body.appendChild(tempElement);
+
+    const readThemeColors = (className: string) => {
+      tempElement.className = className;
+      const computedStyle = getComputedStyle(tempElement);
+      return {
+        background: computedStyle.getPropertyValue('--bg-color').trim(),
+        text: computedStyle.getPropertyValue('--text-color').trim(),
+        hover: computedStyle.getPropertyValue('--hover-color').trim(),
+      };
+    };
+    const lightColors = readThemeColors('light');
+    const darkColors = readThemeColors('dark');
+
+    document.body.removeChild(tempElement);
+
+    return {
+      light: {
+        name: 'light',
+        colors: lightColors
+      },
+      dark: {
+        name: 'dark',
+        colors: darkColors
+      }
+    };
   }
 
   on(event: 'themeChange', callback: (theme: Theme) => void): void {
@@ -70,9 +78,8 @@ export class ThemeManager {
 
   toggleTheme(): void {
     const newThemeName = this.currentTheme.name === 'light' ? 'dark' : 'light';
-    this.currentTheme = themes[newThemeName];
+    this.currentTheme = this.themes[newThemeName];
     this.applyTheme();
-    this.saveTheme();
     this.emit('themeChange', this.currentTheme);
   }
 
@@ -80,10 +87,6 @@ export class ThemeManager {
     const root = document.documentElement;
     root.style.setProperty('--bg-color', this.currentTheme.colors.background);
     root.style.setProperty('--text-color', this.currentTheme.colors.text);
-    root.style.setProperty('--accent-color', this.currentTheme.colors.accent);
-  }
-
-  private saveTheme(): void {
-    localStorage.setItem(this.storageKey, this.currentTheme.name);
+    root.style.setProperty('--hover-color', this.currentTheme.colors.hover);
   }
 }

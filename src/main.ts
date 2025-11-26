@@ -9,18 +9,14 @@ import { layerManager } from './layer-manager';
 const themeManager = new ThemeManager();
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
-app.style.display = 'flex';
-app.style.height = '100vh';
-app.style.width = '100vw';
 
-/** light */
-const lightImage = document.querySelector<SVGElement>('#light')!;
-lightImage.style.display = themeManager.get().name === 'light' ? 'none' : 'block';
+/** light beam */
+const beam = document.querySelector<SVGElement>('#beam')!;
 themeManager.on('themeChange', (theme) => {
   if (theme.name === 'light') {
-    lightImage.style.display = 'none';
+    beam.style.display = 'none';
   } else {
-    lightImage.style.display = 'block';
+    beam.style.display = 'block';
   }
 });
 
@@ -46,15 +42,6 @@ name.addEventListener('click', () => {
     details.style.display = details.style.display === 'none' ? 'flex' : 'none';
   }
 });
-
-const nameHover = document.createElement('style');
-nameHover.textContent = `
-  #name:hover {
-    color: var(--accent-color);
-    text-decoration: underline;
-  }
-`;
-document.head.appendChild(nameHover);
 
 /** contact info */
 const details = document.createElement('div');
