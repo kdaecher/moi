@@ -21,8 +21,6 @@ themeManager.on('themeChange', (theme) => {
 /** lamp */
 const lamp = document.querySelector<SVGElement>('#lamp')!;
 lamp.style.cursor = 'pointer';
-lamp.style.userSelect = 'none';
-layerManager.register(lamp, 1);
 lamp.addEventListener('click', (e) => {
   e.stopPropagation();
   themeManager.toggleTheme();
@@ -30,47 +28,30 @@ lamp.addEventListener('click', (e) => {
 
 /** info container */
 const info = document.querySelector<HTMLDivElement>('#info')!;
-layerManager.register(info, 2);
+layerManager.register(info, 1);
 
 /** name  */
 const name = document.querySelector<HTMLDivElement>('#name')!;
 name.addEventListener('click', () => {
-  const details = document.getElementById('details');
+  const details = document.querySelector<HTMLDivElement>('#details');
   if (details) {
-    details.style.display = details.style.display === 'none' ? 'flex' : 'none';
+    const displayState = window.getComputedStyle(details).display;
+    details.style.display = displayState === 'none' ? 'flex' : 'none';
   }
 });
 
-/** contact info */
-const details = document.createElement('div');
-details.id = 'details';
-details.style.display = 'none';
-details.style.fontSize = '14px';
-details.style.fontFamily = 'serif';
-details.style.flexDirection = 'column';
-details.style.marginTop = '4px';
-details.style.marginLeft = '1px';
-details.style.gap = '4px';
-info.appendChild(details);
-
+/** contact info: TODO */
+const contact = document.querySelector<HTMLDivElement>('#contact')!;
 const email = document.createElement('a');
-email.textContent = 'karsondaecher at gmail.com';
+email.textContent = 'karsondaecher @ gmail.com';
 email.href = 'mailto:karsondaecher@gmail.com';
 email.style.display = 'flex'
 email.style.color = 'var(--text-color)';
 email.style.textDecoration = 'none';
-details.appendChild(email);
+contact.appendChild(email);
 
 /** image stack */
-const deskContainer = document.querySelector<HTMLDivElement>('#desk-container')!;
-const imageContainer = document.createElement('div');
-imageContainer.id = 'image-container';
-imageContainer.style.width='75%';
-imageContainer.style.height='50%';
-imageContainer.style.left='50%';
-imageContainer.style.transform='translate(-50%, 0)';
-imageContainer.style.position = 'absolute'
-deskContainer.appendChild(imageContainer);
+const imageContainer = document.querySelector<HTMLDivElement>('#image-container')!;
 
 const image1 = blurhash_image('IMG_7459.jpg', 'U44dfYO91Y,wayj[a}a{1Yw#}HFWWCfPoKjb');
 image1.id = 'image1';
@@ -81,6 +62,7 @@ image1.style.left = '30%';
 image1.style.transform = 'rotateX(77deg) rotateZ(270.0deg)';
 imageContainer.appendChild(image1);
 drag_and_drop('image1');
+image1.style.cursor = 'pointer';
 
 const image2 = blurhash_image('cats.jpeg', 'L6F=gfys02^,01^ORR0g004.-=w[');
 image2.id = 'image2';
@@ -91,6 +73,7 @@ image2.style.left = '40%';
 image2.style.transform = 'rotateX(77deg) rotateZ(280.5deg)';
 imageContainer.appendChild(image2);
 drag_and_drop('image2');
+image2.style.cursor = 'pointer';
 
 const image3 = blurhash_image('butterflies.jpeg', 'T8AeXd^Z~q004p4o?a?a-:M|M{Rj');
 image3.id = 'image3';
@@ -101,10 +84,11 @@ image3.style.left = '35%';
 image3.style.transform = 'rotateX(77deg) rotateZ(276.5deg)';
 imageContainer.appendChild(image3);
 drag_and_drop('image3');
+image3.style.cursor = 'pointer';
 
 const num_images = 3;
 for (let i = 1; i <= num_images; i++) {
-  const imageEl = document.getElementById(`image${i}`);
+  const imageEl = document.querySelector<HTMLCanvasElement>(`#image${i}`);
   if (!imageEl) continue;
 
   imageEl.addEventListener('click', () => {
