@@ -8,8 +8,6 @@ import { layerManager } from './layer-manager';
 
 const themeManager = new ThemeManager();
 
-const app = document.querySelector<HTMLDivElement>('#app')!;
-
 /** light beam */
 const beam = document.querySelector<SVGElement>('#beam')!;
 themeManager.on('themeChange', (theme) => {
@@ -63,32 +61,45 @@ email.style.color = 'var(--text-color)';
 email.style.textDecoration = 'none';
 details.appendChild(email);
 
-/** image gallery */
+/** image stack */
+const deskContainer = document.querySelector<HTMLDivElement>('#desk-container')!;
+const imageContainer = document.createElement('div');
+imageContainer.id = 'image-container';
+imageContainer.style.width='75%';
+imageContainer.style.height='50%';
+imageContainer.style.left='50%';
+imageContainer.style.transform='translate(-50%, 0)';
+imageContainer.style.position = 'absolute'
+deskContainer.appendChild(imageContainer);
+
 const image1 = blurhash_image('IMG_7459.jpg', 'U44dfYO91Y,wayj[a}a{1Yw#}HFWWCfPoKjb');
 image1.id = 'image1';
+image1.style.width = '17%';
 image1.style.position = 'absolute';
-image1.style.top = '67%';
-image1.style.left = '18%';
-image1.style.transform = 'rotate(-15deg)';
-app.appendChild(image1);
+image1.style.top = '17%';
+image1.style.left = '30%';
+image1.style.transform = 'rotateX(77deg) rotateZ(270.0deg)';
+imageContainer.appendChild(image1);
 drag_and_drop('image1');
 
 const image2 = blurhash_image('cats.jpeg', 'L6F=gfys02^,01^ORR0g004.-=w[');
 image2.id = 'image2';
+image2.style.width = '17%';
 image2.style.position = 'absolute';
-image2.style.top = '53%';
-image2.style.left = '20%';
-image2.style.transform = 'rotate(10deg)';
-app.appendChild(image2);
+image2.style.top = '7%';
+image2.style.left = '40%';
+image2.style.transform = 'rotateX(77deg) rotateZ(280.5deg)';
+imageContainer.appendChild(image2);
 drag_and_drop('image2');
 
 const image3 = blurhash_image('butterflies.jpeg', 'T8AeXd^Z~q004p4o?a?a-:M|M{Rj');
 image3.id = 'image3';
+image3.style.width = '17%';
 image3.style.position = 'absolute';
-image3.style.top = '64%';
-image3.style.left = '25%';
-image3.style.transform = 'rotate(5deg)';
-app.appendChild(image3);
+image3.style.top = '12%';
+image3.style.left = '35%';
+image3.style.transform = 'rotateX(77deg) rotateZ(276.5deg)';
+imageContainer.appendChild(image3);
 drag_and_drop('image3');
 
 const num_images = 3;
@@ -108,12 +119,11 @@ for (let i = 1; i <= num_images; i++) {
 const rockImage = document.createElement('img');
 rockImage.id = 'rock';
 rockImage.src = rock;
-rockImage.style.width = '100px';
-rockImage.style.height = '100px';
+rockImage.style.width = '5%';
 rockImage.style.position = 'absolute';
-rockImage.style.top = '65%';
-rockImage.style.left = '20%';
-app.appendChild(rockImage);
+rockImage.style.top = '40%';
+rockImage.style.left = '40%';
+imageContainer.appendChild(rockImage);
 drag_and_drop('rock');
 
 rockImage.addEventListener('click', () => {

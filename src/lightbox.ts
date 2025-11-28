@@ -1,11 +1,25 @@
 import { layerManager } from './layer-manager';
 
+const app = document.getElementById('app');
+
 export function lightbox(elementId: string) {
   const element = document.getElementById(elementId);
-  if (!element) return;
-
-  // clone element to remove event listeners
+  if (!element || !app) return;
+  const originalParent = element.parentNode || app;
   const originalElement = element;
+
+  // save original dimensions and position
+  const computedStyle = window.getComputedStyle(originalElement);
+  const widthBeforeTransform = parseFloat(computedStyle.width);
+  const heightBeforeTransform = parseFloat(computedStyle.height);
+  const rectAfterTransform = originalElement.getBoundingClientRect();
+  const centerX = rectAfterTransform.left + rectAfterTransform.width / 2;
+  const centerY = rectAfterTransform.top + rectAfterTransform.height / 2;
+  const leftBeforeTransform = centerX - widthBeforeTransform / 2;
+  const topBeforeTransform = centerY - heightBeforeTransform / 2;
+  const originalTransform = computedStyle.transform;
+
+  // clone element to remove event listeners and remove from parent
   const clonedElement = element.cloneNode(true) as HTMLElement;
   if (element instanceof HTMLCanvasElement && clonedElement instanceof HTMLCanvasElement) {
     clonedElement.width = element.width;
@@ -16,24 +30,23 @@ export function lightbox(elementId: string) {
       ctx.drawImage(element, 0, 0);
     }
   }
-  element.parentNode?.replaceChild(clonedElement, element);
-  const workingElement = clonedElement;
+  clonedElement.style.left = `${leftBeforeTransform}px`;
+  clonedElement.style.top = `${topBeforeTransform}px`;
+  clonedElement.style.width = `${widthBeforeTransform}px`;
+  clonedElement.style.height = `${heightBeforeTransform}px`;
+  clonedElement.style.transform = originalTransform;
+  clonedElement.style.cursor = 'default';
+  clonedElement.style.position = 'fixed';
+  layerManager.set(clonedElement, layerManager.getMaxZIndex() + 2);
+  clonedElement.style.transition = 'all 0.3s ease';
 
-  const computedStyle = window.getComputedStyle(workingElement);
-  
-  const widthBeforeTransform = parseFloat(computedStyle.width);
-  const heightBeforeTransform = parseFloat(computedStyle.height);
-  const rectAfterTransform = workingElement.getBoundingClientRect();
-  const centerX = rectAfterTransform.left + rectAfterTransform.width / 2;
-  const centerY = rectAfterTransform.top + rectAfterTransform.height / 2;
-  const leftBeforeTransform = centerX - widthBeforeTransform / 2;
-  const topBeforeTransform = centerY - heightBeforeTransform / 2;
-  
-  const transform = computedStyle.transform;
-  const originalRotation = transform && transform !== 'none' ? 
-    parseTransform(transform).rotation : 0;
+  // swap original for cloned
+  app.appendChild(clonedElement);
+  originalParent?.removeChild(element);
 
+  // lightbox overlay
   const overlay = document.createElement('div');
+  overlay.id = 'lightbox-overlay';
   overlay.style.position = 'fixed';
   overlay.style.top = '0';
   overlay.style.left = '0';
@@ -42,13 +55,9 @@ export function lightbox(elementId: string) {
   overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
   layerManager.register(overlay);
   overlay.style.transition = 'all 0.3s ease';
-  document.body.appendChild(overlay);
+  app.appendChild(overlay);
 
-  workingElement.style.cursor = 'default';
-  workingElement.style.position = 'fixed';
-  layerManager.set(workingElement, layerManager.getMaxZIndex() + 2);
-  workingElement.style.transition = 'all 0.3s ease';
-
+  // animate in
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
@@ -64,47 +73,41 @@ export function lightbox(elementId: string) {
         newHeight = maxHeight;
         newWidth = newHeight * aspectRatio;
       }
-      
-      workingElement.style.left = `${(window.innerWidth - newWidth) / 2}px`;
-      workingElement.style.top = `${(window.innerHeight - newHeight) / 2}px`;
-      workingElement.style.width = `${newWidth}px`;
-      workingElement.style.height = `${newHeight}px`;
-      workingElement.style.transform = 'rotate(0deg)';
+
+      clonedElement.style.left = `${(window.innerWidth - newWidth) / 2}px`;
+      clonedElement.style.top = `${(window.innerHeight - newHeight) / 2}px`;
+      clonedElement.style.width = `${newWidth}px`;
+      clonedElement.style.height = `${newHeight}px`;
+      clonedElement.style.transform = 'rotate(0deg)';
     });
   });
-
+  
   const handleEscape = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       closeLightbox();
     }
   };
+  document.addEventListener('keydown', handleEscape);
 
+  // animate out
   const closeLightbox = () => {
     document.removeEventListener('keydown', handleEscape);
     overlay.onclick = null;
 
-    workingElement.style.left = `${leftBeforeTransform}px`;
-    workingElement.style.top = `${topBeforeTransform}px`;
-    workingElement.style.width = `${widthBeforeTransform}px`;
-    workingElement.style.height = `${heightBeforeTransform}px`;
-    workingElement.style.transform = `rotate(${originalRotation}deg)`;
+    clonedElement.style.left = `${leftBeforeTransform}px`;
+    clonedElement.style.top = `${topBeforeTransform}px`;
+    clonedElement.style.width = `${widthBeforeTransform}px`;
+    clonedElement.style.height = `${heightBeforeTransform}px`;
+    clonedElement.style.transform = originalTransform;
     overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
     
     setTimeout(() => {
       // restore original element
-      workingElement.parentNode?.replaceChild(originalElement, workingElement);
-      document.body.removeChild(overlay);
+      originalParent?.appendChild(originalElement);
+      app.removeChild(clonedElement);
+      app.removeChild(overlay);
+      layerManager.remove(overlay);
     }, 300);
   };
-
   overlay.onclick = closeLightbox;
-  document.addEventListener('keydown', handleEscape);
 }
-
-const parseTransform = (transform: string) => {
-  const values = transform.split('(')[1].split(')')[0].split(',');
-  const a = parseFloat(values[0]);
-  const b = parseFloat(values[1]);
-  const rotation = Math.atan2(b, a) * (180 / Math.PI);
-  return { rotation };
-};
