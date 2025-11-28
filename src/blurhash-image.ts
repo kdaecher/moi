@@ -29,8 +29,6 @@ export function blurhash_image(imageName: string, hash: string): HTMLCanvasEleme
     if (ctx) {
       canvas.width = image.width;
       canvas.height = image.height;
-      canvas.style.width = `${DEFAULT_WIDTH}px`;
-      canvas.style.height = `${DEFAULT_HEIGHT}px`;
       canvas.style.objectFit = 'cover';
       ctx.drawImage(image, 0, 0);
       return ctx.getImageData(0, 0, image.width, image.height);
