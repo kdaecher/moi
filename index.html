@@ -8,6 +8,7 @@
   <link rel='icon' href='favicon.ico' type='image/x-icon'>
 
   <style>
+    /* theme */
     :root {
       --light-bg-color: white;
       --light-text-color: black;
@@ -45,7 +46,9 @@
         --hover-color: var(--dark-hover-color);
       }
     }
-    
+    /* end theme */
+
+    /* layout */
     body {
       padding: 0;
       margin: 0;
@@ -66,16 +69,34 @@
       position: absolute;
       top: 30px;
       left: 30px;
+      max-width: 170px;
       font-family: 'Arial', sans-serif;
       font-size: 20px;
       color: var(--text-color);
+      transition: top 0.3s ease, left 0.3s ease;
+    }
+    @media (max-width: 768px), (max-height: 500px) {
+      #info {
+        top: 15px;
+        left: 15px;
+        margin-right: 10px;
+      }
     }
     #name {
       display: flex;
+      user-select: none;
+      cursor: pointer;
       &:hover {
         color: var(--hover-color);
         text-decoration: underline;
       }
+    }
+    #details {
+      display: none;
+      font-size: 14px;
+      font-family: serif;
+      flex-direction: column;
+      margin-left: 1px;
     }
      #desk-container {
       display: flex;
@@ -122,10 +143,19 @@
       fill: var(--accent-color);
       stroke: var(--accent-color);
       height: 100%;
+      user-select: none;
     }
     .lamp-clickable {
       pointer-events: fill;
     }
+    #image-container {
+      width: 75%;
+      height: 50%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      position: absolute;
+    }
+    /* end layout */
   </style>
 </head>
 
@@ -134,6 +164,16 @@
     <div id='app'>
       <div id='info'>
         <div id='name'>karson daecher</div>
+        <div id='details'>
+          <div id='bio'>
+            <p>
+              karson daecher is a software engineer from san francisco currently living in brooklyn. she enjoys spending time with cats and making physical and digital art
+            </p>
+            <p id='contact'>
+              she can be reached at
+            </p>
+          </div>
+        </div>
       </div>
       <div id="desk-container">
         <svg id="desk" viewBox="0 0 757 519" xmlns="http://www.w3.org/2000/svg">
@@ -151,7 +191,7 @@
             <path class='lamp-clickable' d="M757.255 992.541C757.063 957.753 734.846 927.145 624.802 921.818M757.255 992.541H419.479M757.255 992.541C757.256 992.694 757.256 992.847 757.256 993M757.255 992.541H757.867M624.802 921.818C619.528 921.563 614.052 921.366 608.367 921.229M624.802 921.818L629.867 922L896.832 427.915M624.802 921.818L608.367 921.229M608.367 921.229C602.063 921.077 595.501 921 588.673 921C447.216 921 419.696 954.236 419.479 992.541M608.367 921.229L882.182 421.251M419.479 992.541C419.478 992.694 419.478 992.847 419.478 993M419.479 992.541H418.867M882.182 421.251C886.044 424.988 891.157 427.439 896.832 427.915M882.182 421.251C877.671 416.888 874.867 410.771 874.867 404C874.867 403.697 874.873 403.395 874.884 403.094M896.832 427.915C897.503 427.971 898.182 428 898.867 428C912.122 428 922.867 417.255 922.867 404C922.867 390.745 912.122 380 898.867 380C892.109 380 886.003 382.793 881.641 387.289M522.456 69.0582C526.092 66.271 528.907 62.4669 530.476 58.0711M522.456 69.0582L874.884 403.094M522.456 69.0582C518.413 72.1579 513.355 74 507.867 74C500.758 74 494.37 70.9085 489.975 65.9966M530.476 58.0711L881.641 387.289M530.476 58.0711C531.377 55.5488 531.867 52.8316 531.867 50C531.867 36.7452 521.122 26 507.867 26C494.612 26 483.867 36.7452 483.867 50C483.867 51.4291 483.992 52.829 484.232 54.1895M881.641 387.289C877.644 391.408 875.112 396.956 874.884 403.094M484.232 54.1895C485.022 58.6789 487.06 62.7383 489.975 65.9966M484.232 54.1895L409.23 102.267M489.975 65.9966L415.507 114.582M415.507 114.582C413.648 110.402 411.552 106.295 409.23 102.267M415.507 114.582C422.241 129.722 425.867 145.816 425.867 162.5C425.867 202.826 404.398 239.7 369.367 268L1.36719 74.5C6.86719 64.5 113.466 1 194.367 1C291.702 1 375.006 42.9063 409.23 102.267" stroke-width="2" />
           </svg>
         </div>
-      </div>
+        <div id="image-container"></div>
     </div>
     <script type='module' src='/src/main.ts'></script>
   </main>

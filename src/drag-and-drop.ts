@@ -12,6 +12,7 @@ export function drag_and_drop(elementId: string) {
     event.preventDefault();
     event.stopPropagation();
     layerManager.bringToFront(target);
+    const originalCursor = target.style.cursor;
     target.style.cursor = 'grabbing';
 
     const e = event instanceof MouseEvent ? event : event.touches[0];
@@ -60,7 +61,7 @@ export function drag_and_drop(elementId: string) {
     };
 
     const onEnd = () => {
-      target.style.cursor = 'grab';
+      target.style.cursor = originalCursor;
       moveInBounds();
     };
 
