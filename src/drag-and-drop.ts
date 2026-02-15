@@ -45,18 +45,29 @@ export function drag_and_drop(elementId: string) {
     };
 
     const moveInBounds = () => {
-      const targetRect = target.getBoundingClientRect();
+      const boundingRect = target.getBoundingClientRect();
+      const parentRect = (() => {
+        if (target.parentElement && target.parentElement.id !== "app") {
+          return target.parentElement.getBoundingClientRect();
+        }
+        return {
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0
+        };
+      })();
 
-      if (targetRect.left < 0) {
-        target.style.left = '0px';
-      } else if (targetRect.left > app.clientWidth - target.clientWidth) {
-        target.style.left = app.clientWidth - target.clientWidth + 'px';
+      if (boundingRect.left < 0) {
+        target.style.left = `${-parentRect.left -target.clientWidth/2 + boundingRect.width/2}px`;
+      } else if (boundingRect.left > app.clientWidth - boundingRect.width) {
+        target.style.left = `${-parentRect.left + app.clientWidth - target.clientWidth/2 - boundingRect.width/2}px`;
       }
 
-      if (targetRect.top < 0) {
-        target.style.top = '0px';
-      } else if (targetRect.top > app.clientHeight - target.clientHeight) {
-        target.style.top = app.clientHeight - target.clientHeight + 'px';
+      if (boundingRect.top < 0) {
+        target.style.top = `${-parentRect.top -target.clientHeight/2 + boundingRect.height/2}px`;
+        } else if (boundingRect.top > app.clientHeight - boundingRect.height) {
+        target.style.top = `${-parentRect.top + app.clientHeight - target.clientHeight/2 - boundingRect.height/2}px`;
       }
     };
 
