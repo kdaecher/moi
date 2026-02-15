@@ -100,16 +100,34 @@ for (let i = 1; i <= num_images; i++) {
   }
 }
 
-const rockImage = document.createElement('img');
-rockImage.id = 'rock';
-rockImage.src = rock;
-rockImage.style.width = '5%';
-rockImage.style.position = 'absolute';
-rockImage.style.top = '40%';
-rockImage.style.left = '40%';
-imageContainer.appendChild(rockImage);
+const rockSVG = document.getElementById('rock')!;
+rockSVG.innerHTML = `
+  <style>
+    .image-mapper-shape {
+      fill: rgba(0, 0, 0, 0);
+      pointer-events: fill;
+      cursor: inherit;
+    }
+    .image-mapper-link {
+      cursor: inherit;
+    }
+  </style>
+  <image xlink:href="${rock}" style="width: 2125px;"></image>
+  <a xlink:href="#" target="---" xlink:title="" class="image-mapper-link">
+    <g>
+      <polygon class="image-mapper-shape" data-index="1" points="1029.2 62.5594 754.748 187.678 318.851 478.276 -2.01804 954.535 40.3609 1142.21 149.335 1333.93 262.346 1481.24 421.771 1578.11 738.604 1660.85 839.506 1654.8 1075.62 1707.27 1226.97 1757.72 1481.24 1749.64 1586.18 1715.34 1731.48 1638.65 1874.76 1578.11 1965.57 1491.33 2082.62 1428.77 2080.6 1394.47 2112.89 1370.25 2100.78 1275.4 2102.8 1204.77 2060.42 1091.76 2028.13 1025.17 1965.57 928.3 1903.02 823.362 1674.98 546.89 1658.83 452.042 1594.25 365.266 1493.35 226.021 1426.76 151.353 1394.47 98.8841 1188.63 -8.07218"></polygon>
+    </g>
+  </a>
+`
+rockSVG.style.width = '5%';
+rockSVG.style.position = 'absolute';
+rockSVG.style.top = '40%';
+rockSVG.style.left = '40%';
+rockSVG.style.userSelect = 'none';
+rockSVG.style.pointerEvents = 'none';
+imageContainer.appendChild(rockSVG);
 drag_and_drop('rock');
 
-rockImage.addEventListener('click', () => {
-  layerManager.bringToFront(rockImage);
+rockSVG.addEventListener('click', () => {
+  layerManager.bringToFront(rockSVG);
 });
