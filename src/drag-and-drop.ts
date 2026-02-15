@@ -8,7 +8,7 @@ export function drag_and_drop(elementId: string) {
   if (!target || !app) return;
   target.style.cursor = 'grab';
 
-  const onDragStart = (event: MouseEvent | TouchEvent)  => {
+  const onDragStart = (event: MouseEvent | TouchEvent) => {
     event.preventDefault();
     event.stopPropagation();
     layerManager.bringToFront(target);
@@ -22,8 +22,20 @@ export function drag_and_drop(elementId: string) {
     const startPageY = e.pageY;
 
     // initial element position
-    const startLeft = target.offsetLeft;
-    const startTop = target.offsetTop;
+    const startLeft = target.offsetLeft ?? (() => {
+      const parent = target.parentElement;
+      if (parent && parent.id !== 'app') {
+        return target.getBoundingClientRect().left - parent.getBoundingClientRect().left;
+      }
+      return target.getBoundingClientRect().left;
+    })();
+    const startTop = target.offsetTop ?? (() => {
+      const parent = target.parentElement;
+      if (parent && parent.id !== 'app') {
+        return target.getBoundingClientRect().top - parent.getBoundingClientRect().top;
+      }
+      return target.getBoundingClientRect().top;
+    })();
 
     const moveAt = (pageX: number, pageY: number) => {
       // mouse delta
